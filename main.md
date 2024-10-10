@@ -1,3 +1,4 @@
+```bash
 nano ~/.bashrc
 /home/user/tools/affymetrix_power_tools/bin/
 source ~/.bashrc
@@ -11,9 +12,10 @@ apt-format-result \
   --export-vcf-file output.vcf
 
 cat ah.txt | cut -f 1-806 > test_batch.txt
-Problem: probably need to remove annotation columns from the file.
+# Problem: probably need to remove annotation columns from the file.
 
 awk 'NR >= 7 {for (i = 2; i <= 805; i++) print $i}' ah.txt | sort | uniq -c
+```
 
 8849114 A
 207764927 AA
@@ -36,7 +38,8 @@ awk 'NR >= 7 {for (i = 2; i <= 805; i++) print $i}' ah.txt | sort | uniq -c
 15344830 NoCall
  527062 NoCall_1
  153398 ZeroCN
- 
+
+ ```bash
 awk 'NR < 7 {print; next} {for (i = 2; i <= 805; i++) if ($i != "AA" && $i != "AB" && $i != "BB" && $i != "NoCall" && $i != "NoCall_1") next} 1' ah.txt > ah1.txt
 
 # changing A and B to 0 and 1:
@@ -100,3 +103,4 @@ cat dominant_results.assoc.logistic | awk '$9 != "NA"' | sort -gk 9,9 | head
 cat recessive_results.assoc.logistic | awk '$9 != "NA"' | sort -gk 9,9 | head 
 cat simple_logistic.assoc.logistic | awk '$9 != "NA"' | sort -gk 9,9 | head 
 cat assoc_results.assoc | awk '$9 != "NA"' | sort -gk 9,9 | head 
+```
