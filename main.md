@@ -97,10 +97,16 @@ plink2 --bfile ah5 --pca 10 --out ah_pca
 plink --bfile ah5 --covar ah_pca.eigenvec --logistic --hide-covar --thread-num 8 --out simple_logistic
 plink --bfile ah5 --covar ah_pca.eigenvec --logistic --dominant --hide-covar --out dominant_results
 plink --bfile ah5 --covar ah_pca.eigenvec --logistic --recessive --hide-covar --out recessive_results
-plink --bfile ah5 --allow-no-sex --assoc --out assoc_results
+plink --bfile ah5 --assoc --out assoc_results
+plink --bfile ah5 --fisher
+plink --bfile ah5 --model
+plink2 --bfile ah5 --glm --covar ah_pca.eigenvec
 
 cat dominant_results.assoc.logistic | awk '$9 != "NA"' | sort -gk 9,9 | head 
 cat recessive_results.assoc.logistic | awk '$9 != "NA"' | sort -gk 9,9 | head 
 cat simple_logistic.assoc.logistic | awk '$9 != "NA"' | sort -gk 9,9 | head 
-cat assoc_results.assoc | awk '$9 != "NA"' | sort -gk 9,9 | head 
+cat assoc_results.assoc | awk '$9 != "NA"' | sort -gk 9,9 | head
+cat plink.assoc.fisher | awk '$8 != "NA"' | sort -gk 8,8 | head
+cat plink.model | awk '$10 != "NA"' | sort -gk 10,10 | head
+cat plink2.PHENO1.glm.logistic.hybrid | awk '$15 != "NA"' | sort -gk 15,15 | head
 ```
