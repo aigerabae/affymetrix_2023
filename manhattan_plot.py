@@ -14,33 +14,34 @@ def read_gwas_file(file_path):
     possible_chr_cols = ['#CHROM', 'CHR']
     chr_col = next((col for col in possible_chr_cols if col in df.columns), None)
 
-    # Identify the position column
-    possible_pos_cols = ['BP', 'POS']
-    pos_col = next((col for col in possible_pos_cols if col in df.columns), None)
+    # Identify the SNP column
+    possible_snp_cols = ['SNP', 'ID', 'rsID']
+    snp_col = next((col for col in possible_snp_cols if col in df.columns), None)
 
     # Identify the p-value column
     possible_pval_cols = ['P', 'p', 'PVAL', 'pval']
     pval_col = next((col for col in possible_pval_cols if col in df.columns), None)
 
-    # Identify the rsID column
-    possible_snp_cols = ['SNP', 'ID', 'rsID']
-    snp_col = next((col for col in possible_snp_cols if col in df.columns), None)
-
     # Check if required columns are present
-    if not chr_col or not pos_col or not pval_col or not snp_col:
-        raise ValueError("Required columns ('CHR'/'#CHROM', 'BP'/'POS', 'P'/'p', or 'SNP'/'ID'/'rsID') not found. Check the file format.")
+    if not chr_col or not snp_col or not pval_col:
+        raise ValueError("Required columns ('CHR', 'SNP'/'ID'/'rsID', 'P') not found. Check the file format.")
 
-    return df[[chr_col, pos_col, snp_col, pval_col]].rename(columns={chr_col: 'CHR', pos_col: 'BP', snp_col: 'SNP', pval_col: 'P'})
+    # Convert p-value column to numeric, set 'NA' as NaN
+    df[pval_col] = pd.to_numeric(df[pval_col], errors='coerce')
+
+    # Drop rows with NaN p-values
+    df = df.dropna(subset=[pval_col])
+
+    # Create a sequential index for plotting since there's no position column
+    df['ind'] = range(len(df))
+
+    return df[[chr_col, snp_col, pval_col, 'ind']].rename(columns={chr_col: 'CHR', snp_col: 'SNP', pval_col: 'P'})
 
 def plot_manhattan(df, output_file):
     df['-log10(P)'] = -np.log10(df['P'])
-    
-    # Remove infinite values
-    df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=['-log10(P)'])
 
     # Manhattan plot setup
     df['CHR'] = df['CHR'].astype('category')
-    df['ind'] = range(len(df))
     df_grouped = df.groupby(('CHR'))
     
     # Set the figure size wider for better spacing of x-axis ticks
@@ -107,4 +108,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
