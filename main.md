@@ -110,3 +110,12 @@ cat plink.assoc.fisher | awk '$8 != "NA"' | sort -gk 8,8 | head
 cat plink.model | awk '$10 != "NA"' | sort -gk 10,10 | head
 cat plink2.PHENO1.glm.logistic.hybrid | awk '$15 != "NA"' | sort -gk 15,15 | head
 ```
+
+```bash
+ ../alzheimer/plink/manhattan_plot.py -i assoc_results.assoc 
+ ../alzheimer/plink/manhattan_plot.py -i dominant_results.assoc.logistic 
+ ../alzheimer/plink/manhattan_plot.py -i plink.assoc.fisher
+ ../alzheimer/plink/manhattan_plot.py -i plink2.PHENO1.glm.logistic.hybrid
+ ../alzheimer/plink/manhattan_plot.py -i recessive_results.assoc.logistic
+ ../alzheimer/plink/manhattan_plot.py -i simple_logistic.assoc.logistic
+```
